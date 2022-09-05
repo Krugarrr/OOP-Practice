@@ -2,6 +2,7 @@ using Isu.Entities;
 using Isu.Models;
 using Isu.Service;
 using Isu.Services;
+using Isu.Tools;
 using Xunit;
 
 namespace Isu.Test;
@@ -24,20 +25,22 @@ public class IsuTest
     [Fact]
     public void ReachMaxStudentPerGroup_ThrowException()
     {
-        const int limit = 26;
+        const int limit = 25;
         Group group = _isuService.AddGroup(new GroupName("M3103"));
 
-        for (int i = 0; i <= limit; i++)
+        for (int i = 0; i < limit; i++)
         {
             _isuService.AddStudent(group, $"Елизавета Петрова{i}");
         }
+
+        Assert.Throws<StudentsCountException>(() => _isuService.AddStudent(group, "Эмин Керимов"));
     }
 
     [Fact]
     public void CreateGroupWithInvalidName_ThrowException()
     {
-        Group group = _isuService.AddGroup(new GroupName("M313414414"));
-        Group group1 = _isuService.AddGroup(new GroupName("f3112"));
+        Assert.Throws<GroupNameLengthException>(() => _isuService.AddGroup(new GroupName("M3123124")));
+        Assert.Throws<GroupNameLetterException>(() => _isuService.AddGroup(new GroupName("f1231")));
     }
 
     [Fact]
