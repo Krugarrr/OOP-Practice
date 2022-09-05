@@ -15,8 +15,7 @@ public class IsuTest
     public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
     {
         Group group = _isuService.AddGroup(new GroupName("M3112"));
-        Group group1 = _isuService.AddGroup(new GroupName("M3113"));
-        Student student = _isuService.AddStudent(group, "Пенис Детров");
+        Student student = _isuService.AddStudent(group, "Денис Петров");
 
         Assert.Contains(student, group.Students);
         Assert.Equal(student.Group, group.Name);
