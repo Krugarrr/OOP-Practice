@@ -24,22 +24,30 @@ public class IsuTest
     [Fact]
     public void ReachMaxStudentPerGroup_ThrowException()
     {
-        const int limit = 25;
         Group group = _isuService.AddGroup(new GroupName("M3103"));
 
-        for (int i = 0; i < limit; i++)
+        for (int i = 0; i < group.Max; i++)
         {
             _isuService.AddStudent(group, $"Елизавета Петрова{i}");
         }
 
-        Assert.Throws<StudentsCountException>(() => _isuService.AddStudent(group, "Эмин Керимов"));
+        Assert.Throws<StudentsCountException>(() => _isuService.AddStudent(group, "Александр Терентьев"));
     }
 
-    [Fact]
-    public void CreateGroupWithInvalidName_ThrowException()
+    [Theory]
+    [InlineData("M148888")]
+    [InlineData("M228322")]
+    public void CreateGroupWithInvalidName_ThrowLengthException(string groupName)
     {
-        Assert.Throws<GroupNameLengthException>(() => _isuService.AddGroup(new GroupName("M3123124")));
-        Assert.Throws<GroupNameLetterException>(() => _isuService.AddGroup(new GroupName("f1231")));
+        Assert.Throws<GroupNameLengthException>(() => _isuService.AddGroup(new GroupName(groupName)));
+    }
+
+    [Theory]
+    [InlineData("f3198")]
+    [InlineData("adsada")]
+    public void CreateGroupWithInvalidName_ThrowLetterException(string groupName)
+    {
+        Assert.Throws<GroupNameLetterException>(() => _isuService.AddGroup(new GroupName(groupName)));
     }
 
     [Fact]
