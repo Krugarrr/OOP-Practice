@@ -10,7 +10,8 @@ public class GroupName : IEquatable<GroupName>
 {
     private const int MaxGroupNameLength = 7;
     private const int MinGroupNameLength = 5;
-
+    private const int CourseNumberPosition = 2;
+    private const int GroupLetterPosition = 0;
     public GroupName(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
@@ -18,10 +19,10 @@ public class GroupName : IEquatable<GroupName>
         if (name.Length is < MinGroupNameLength or >= MaxGroupNameLength)
             throw new GroupNameLengthException($"{name.Length} is an invalid length for a group name");
 
-        if (!char.IsUpper(name[0]))
+        if (!char.IsUpper(name[GroupLetterPosition]))
         {
             throw new GroupNameLetterException($"Only capital letter is allowed in the group name. " +
-                                               $"{name[0]} does not fit");
+                                               $"{name[GroupLetterPosition]} does not fit");
         }
 
         Name = name;
@@ -49,5 +50,5 @@ public class GroupName : IEquatable<GroupName>
     public override int GetHashCode()
         => HashCode.Combine(Name, Course);
 
-    private int GetCourse(string name) => CharUnicodeInfo.GetDecimalDigitValue(name[2]);
+    private int GetCourse(string name) => CharUnicodeInfo.GetDecimalDigitValue(name[CourseNumberPosition]);
 }
