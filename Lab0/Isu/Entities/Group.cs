@@ -18,6 +18,8 @@ public class Group : IEquatable<Group>
     public GroupName Name { get; }
     public List<Student> Students { get; }
     public CourseNumber Course => Name.Course;
+    public int Max => MaxStudents;
+    public int Min => MinStudents;
 
     public bool Equals(Group? other)
         => other is not null
@@ -39,7 +41,7 @@ public class Group : IEquatable<Group>
 
     internal void AddStudent(Student student)
     {
-        this.Validate();
+        Validate();
         Students.Add(student);
         student.ChangeGroup(Name);
     }
@@ -53,6 +55,6 @@ public class Group : IEquatable<Group>
     private void Validate()
     {
         if (Students.Count is < MinStudents or >= MaxStudents)
-            throw new StudentsCountException($"{Students.Count} is invalid number of students in a group");
+            throw new StudentsCountException($"The limit of students is exceeded, or there are none at all");
     }
 }
