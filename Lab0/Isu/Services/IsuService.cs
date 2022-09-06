@@ -7,9 +7,9 @@ namespace Isu.Service;
 
 public class IsuService : IIsuService
 {
-    private List<Student> _students;
-    private List<Group> _groups;
-    private int firstId = 1_000_000;
+    private readonly List<Student> _students;
+    private readonly List<Group> _groups;
+    private int firstId = 1_00_000;
 
     public IsuService()
     {
@@ -44,7 +44,6 @@ public class IsuService : IIsuService
         _students.Add(student);
         group.AddStudent(student);
 
-        // group.Validate();
         return student;
     }
 
@@ -60,24 +59,20 @@ public class IsuService : IIsuService
         return student;
     }
 
-    public List<Student> FindStudents(GroupName groupName)
+    public IReadOnlyList<Student> FindStudents(GroupName groupName)
     {
         ArgumentNullException.ThrowIfNull(groupName);
         if (GroupExist(groupName))
             throw new GroupExistException($"Group {groupName} is doesn't exist");
 
         Group group = _groups.First(gr => gr.Name == groupName);
-        var students = new List<Student>();
-
-        students.AddRange(group.Students);
-        return students;
+        return group.Students;
     }
 
-    public List<Student> FindStudents(CourseNumber courseNumber)
+    public IReadOnlyList<Student> FindStudents(CourseNumber courseNumber)
     {
-        var students = new List<Student>();
-        students.AddRange(_students.FindAll(s => s.Course == courseNumber));
-        return students;
+        ArgumentNullException.ThrowIfNull(courseNumber);
+        return _students.Where(student => student.Course == courseNumber).ToList();
     }
 
     public Group FindGroup(GroupName groupName)
@@ -89,11 +84,10 @@ public class IsuService : IIsuService
         return group;
     }
 
-    public List<Group> FindGroups(CourseNumber courseNumber)
+    public IReadOnlyList<Group> FindGroups(CourseNumber courseNumber)
     {
-        var group = new List<Group>();
-        group.AddRange(_groups.FindAll(s => s.Course == courseNumber));
-        return group;
+        ArgumentNullException.ThrowIfNull(courseNumber);
+        return _groups.Where(group => group.Course == courseNumber).ToList();
     }
 
     public void ChangeStudentGroup(Student student, Group newGroup)
