@@ -7,19 +7,19 @@ public class Group : IEquatable<Group>
 {
     private const int MaxStudents = 25;
     private const int MinStudents = 0;
-
+    private readonly List<Student> _students;
     public Group(GroupName name)
     {
         ArgumentNullException.ThrowIfNull(name);
         Name = name;
-        Students = new List<Student>();
+        _students = new List<Student>();
     }
 
     public GroupName Name { get; }
-    public List<Student> Students { get; }
+    public IReadOnlyCollection<Student> Students => _students.AsReadOnly();
     public CourseNumber Course => Name.Course;
-    public int Max => MaxStudents;
-    public int Min => MinStudents;
+    public int MaxGroupCapacity => MaxStudents;
+    public int MinGroupCapacity => MinStudents;
 
     public bool Equals(Group? other)
         => other is not null
@@ -41,18 +41,18 @@ public class Group : IEquatable<Group>
 
     internal void AddStudent(Student student)
     {
-        Validate();
-        Students.Add(student);
+        ValidateCountOfStudents();
+        _students.Add(student);
         student.ChangeGroup(Name);
     }
 
     internal void RemoveStudent(int id)
     {
-        Student? student = Students.Find(s => s.Id == id);
-        Students.Remove(student!);
+        Student? student = _students.Find(s => s.Id == id);
+        _students.Remove(student!);
     }
 
-    private void Validate()
+    private void ValidateCountOfStudents()
     {
         if (Students.Count is < MinStudents or >= MaxStudents)
             throw new StudentsCountException($"The limit of students is exceeded, or there are none at all");
