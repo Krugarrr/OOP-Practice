@@ -53,10 +53,11 @@ public class IsuService : IIsuService
         return student;
     }
 
-    public Student? FindStudent(int id)
+    public Group GetGroup(GroupName groupName)
     {
-        Student? student = _students.Find(s => s.Id == id);
-        return student;
+        Group group = _groups.FirstOrDefault(g => g.Name == groupName)
+                ?? throw new GroupExistException($"Could not find group by name: {groupName}");
+        return group;
     }
 
     public IReadOnlyList<Student> FindStudents(GroupName groupName)
