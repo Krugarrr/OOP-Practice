@@ -1,6 +1,5 @@
 using Isu.Entities;
 using Isu.Models;
-using Isu.Service;
 using Isu.Services;
 using Isu.Tools;
 using Xunit;
@@ -26,7 +25,7 @@ public class IsuTest
     {
         Group group = _isuService.AddGroup(new GroupName("M3103"));
 
-        for (int i = 0; i < group.Max; i++)
+        for (int i = 0; i < group.MaxGroupCapacity; i++)
         {
             _isuService.AddStudent(group, $"Елизавета Петрова{i}");
         }
