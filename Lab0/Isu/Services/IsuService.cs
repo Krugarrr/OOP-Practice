@@ -1,15 +1,14 @@
 using Isu.Entities;
 using Isu.Models;
-using Isu.Services;
 using Isu.Tools;
 
-namespace Isu.Service;
+namespace Isu.Services;
 
 public class IsuService : IIsuService
 {
     private readonly List<Student> _students;
     private readonly List<Group> _groups;
-    private int firstId = 1_00_000;
+    private int _firstId = 100000;
 
     public IsuService()
     {
@@ -22,7 +21,7 @@ public class IsuService : IIsuService
         ArgumentNullException.ThrowIfNull(name);
 
         if (GroupExist(name))
-            throw new GroupExistException($"Group {name} is doesn't exist");
+            throw new GroupExistException($"Group {name} already exist");
 
         Group group = new Group(name);
         _groups.Add(group);
@@ -34,13 +33,13 @@ public class IsuService : IIsuService
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(group);
 
-        if (StudentExist(name, group.Name, firstId++))
-            throw new StudentExistException();
+        if (StudentExist(name, group.Name, _firstId))
+            throw new StudentExistException("This student already exist");
 
-        group = _groups.First(g => g.Name == group.Name)
-                      ?? throw new GroupExistException($"Group {group.Name} is doesn't exist");
+        _firstId++;
+        group = GetGroup(group.Name);
 
-        Student student = new Student(firstId, name, group.Name, group.Name.Course);
+        Student student = new Student(_firstId, name, group.Name);
         _students.Add(student);
         group.AddStudent(student);
 
@@ -49,7 +48,8 @@ public class IsuService : IIsuService
 
     public Student GetStudent(int id)
     {
-        Student student = _students.First(s => s.Id == id);
+        Student student = _students.FirstOrDefault(s => s.Id == id)
+                          ?? throw new StudentExistException($"Could not find student by Id: {id}");
         return student;
     }
 
@@ -60,32 +60,32 @@ public class IsuService : IIsuService
         return group;
     }
 
-    public IReadOnlyList<Student> FindStudents(GroupName groupName)
+    public Student? FindStudent(int id)
+        => _students.FirstOrDefault(s => s.Id == id);
+
+    public IReadOnlyCollection<Student> FindStudents(GroupName groupName)
     {
         ArgumentNullException.ThrowIfNull(groupName);
-        if (GroupExist(groupName))
-            throw new GroupExistException($"Group {groupName} is doesn't exist");
+        if (!GroupExist(groupName))
+            throw new GroupExistException($"Group {groupName} does not exist");
 
         Group group = _groups.First(gr => gr.Name == groupName);
         return group.Students;
     }
 
-    public IReadOnlyList<Student> FindStudents(CourseNumber courseNumber)
+    public IReadOnlyCollection<Student> FindStudents(CourseNumber courseNumber)
     {
         ArgumentNullException.ThrowIfNull(courseNumber);
-        return _students.Where(student => student.Course == courseNumber).ToList();
+        return _students.Where(student => student.Group.Course == courseNumber).ToList();
     }
 
-    public Group FindGroup(GroupName groupName)
+    public Group? FindGroup(GroupName groupName)
     {
         ArgumentNullException.ThrowIfNull(groupName);
-
-        Group group = _groups.First(g => g.Name == groupName)
-                      ?? throw new GroupExistException($"Group {groupName} is doesn't exist");
-        return group;
+        return _groups.FirstOrDefault(g => g.Name == groupName);
     }
 
-    public IReadOnlyList<Group> FindGroups(CourseNumber courseNumber)
+    public IReadOnlyCollection<Group> FindGroups(CourseNumber courseNumber)
     {
         ArgumentNullException.ThrowIfNull(courseNumber);
         return _groups.Where(group => group.Course == courseNumber).ToList();
