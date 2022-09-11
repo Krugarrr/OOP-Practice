@@ -9,11 +9,7 @@ public class CourseNumber : IEquatable<CourseNumber>
 
     public CourseNumber(int number)
     {
-        if (number is <= MinNumber or > MaxNumber)
-        {
-            throw new CourseNumberException($"{number} is invalid course number");
-        }
-
+        ValidateCourseNumber(number);
         Number = number;
     }
 
@@ -35,4 +31,12 @@ public class CourseNumber : IEquatable<CourseNumber>
 
     public override int GetHashCode()
         => Number.GetHashCode();
+
+    private void ValidateCourseNumber(int number)
+    {
+        if (number is <= MinNumber or > MaxNumber)
+        {
+            throw new CourseNumberException($"{number} is invalid course number");
+        }
+    }
 }
