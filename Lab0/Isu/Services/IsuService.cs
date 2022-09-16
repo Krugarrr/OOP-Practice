@@ -67,7 +67,7 @@ public class IsuService : IIsuService
     {
         ArgumentNullException.ThrowIfNull(groupName);
         if (!GroupExist(groupName))
-            throw new GroupExistException($"Group {groupName} does not exist");
+            return (IReadOnlyCollection<Student>)Enumerable.Empty<Student>();
 
         Group group = _groups.First(gr => gr.Name == groupName);
         return group.Students;
