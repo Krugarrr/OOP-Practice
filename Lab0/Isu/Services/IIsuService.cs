@@ -9,12 +9,13 @@ public interface IIsuService
     Student AddStudent(Group group, string name);
 
     Student GetStudent(int id);
+    Group GetGroup(GroupName groupName);
     Student? FindStudent(int id);
-    List<Student> FindStudents(GroupName groupName);
-    List<Student> FindStudents(CourseNumber courseNumber);
+    IReadOnlyCollection<Student> FindStudents(GroupName groupName);
+    IReadOnlyCollection<Student> FindStudents(CourseNumber courseNumber);
 
     Group? FindGroup(GroupName groupName);
-    List<Group> FindGroups(CourseNumber courseNumber);
+    IReadOnlyCollection<Group> FindGroups(CourseNumber courseNumber);
 
     void ChangeStudentGroup(Student student, Group newGroup);
 }
