@@ -9,9 +9,6 @@ public class OgnpCourse : IEquatable<OgnpCourse>
 
     public OgnpCourse(OgnpName name, MegaFacultyName megaFacultyOwner)
     {
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(MegaFacultyOwner);
-
         Name = name;
         MegaFacultyOwner = megaFacultyOwner;
         _streams = new List<OgnpStream>();
