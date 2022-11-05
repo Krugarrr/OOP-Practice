@@ -14,6 +14,53 @@ public class IsuExtraTest
     private IIsuExtraService _isuExtraService = new IsuExtraService();
     private IAddressBuilder _addressBuilder = new AddressBuilder();
     private IUniversityClassBuilder _universityClassBuilder = new UniversityClassBuilder();
+    private ClassAddress address;
+    private ClassAddress anotherAddress;
+    private UniversityClass lesson;
+    private UniversityClass anotherLesson;
+    private UniversityClass exceptionLesson;
+    private Schedule schedule;
+    private Schedule anotherSchedule;
+    private Schedule exceptionSchedule;
+
+    public IsuExtraTest()
+    {
+        address = _addressBuilder
+            .WithStreet("Кронва")
+            .WithHousing(49)
+            .WithClassroom(147)
+            .Build();
+
+        anotherAddress = _addressBuilder
+            .WithStreet("Пупкино-Зааааречино")
+            .WithHousing(228)
+            .WithClassroom(228322)
+            .Build();
+
+        lesson = _universityClassBuilder
+            .WithAddress(address)
+            .WithName("Оопешечка")
+            .WithTeacher(new Teacher("Макаронич"))
+            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(17, 20)))
+            .Build();
+
+        anotherLesson = _universityClassBuilder
+            .WithAddress(anotherAddress)
+            .WithName("Безполезнич")
+            .WithTeacher(new Teacher("Смешной дедус"))
+            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
+            .Build();
+
+        exceptionLesson = _universityClassBuilder
+            .WithAddress(anotherAddress)
+            .WithName("Ещё один безполезнич")
+            .WithTeacher(new Teacher("Ещё один дедус"))
+            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
+            .Build();
+        schedule = Schedule.Builder.AddClass(lesson).Build();
+        anotherSchedule = Schedule.Builder.AddClass(anotherLesson).Build();
+        exceptionSchedule = Schedule.Builder.AddClass(exceptionLesson).Build();
+    }
 
     [Fact]
     public void AddNewOgnpCourse_CourseCanBeFound()
@@ -31,43 +78,6 @@ public class IsuExtraTest
     [Fact]
     public void AddStudentToOgnpCourse_SchedulesCouldNotIntersect()
     {
-        var address = _addressBuilder
-            .WithStreet("Кронва")
-            .WithHousing(49)
-            .WithClassroom(147)
-            .Build();
-
-        var anotherAddress = _addressBuilder
-            .WithStreet("Пупкино-Зааааречино")
-            .WithHousing(228)
-            .WithClassroom(228322)
-            .Build();
-
-        var lesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Оопешечка")
-            .WithTeacher(new Teacher("Макаронич"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(17, 20)))
-            .Build();
-
-        var anotherLesson = _universityClassBuilder
-            .WithAddress(anotherAddress)
-            .WithName("Безполезнич")
-            .WithTeacher(new Teacher("Смешной дедус"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
-            .Build();
-
-        var exceptionLesson = _universityClassBuilder
-            .WithAddress(anotherAddress)
-            .WithName("Ещё один безполезнич")
-            .WithTeacher(new Teacher("Ещё один дедус"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
-            .Build();
-
-        var schedule = Schedule.Builder.AddClass(lesson).Build();
-        var anotherSchedule = Schedule.Builder.AddClass(anotherLesson).Build();
-        var exceptionSchedule = Schedule.Builder.AddClass(exceptionLesson).Build();
-
         var ognpName = new OgnpName("Науки об истинном кринже");
         var anotherOgnpName = new OgnpName("Науки о маленьком кринже");
         var exceptionOgnpName = new OgnpName("Науки о кошках");
@@ -94,32 +104,6 @@ public class IsuExtraTest
     [Fact]
     public void RemoveStudentFromOgnp_OgnpsCouldNotBeLessThanZero()
     {
-        var address = _addressBuilder
-            .WithStreet("Кронва")
-            .WithHousing(49)
-            .WithClassroom(147)
-            .Build();
-
-        var anotherAddress = _addressBuilder
-            .WithStreet("Пупкино-Зааааречино")
-            .WithHousing(228)
-            .WithClassroom(228322)
-            .Build();
-
-        var lesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Оопешечка")
-            .WithTeacher(new Teacher("Макаронич"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(17, 20)))
-            .Build();
-
-        var anotherLesson = _universityClassBuilder
-            .WithAddress(anotherAddress)
-            .WithName("Безполезнич")
-            .WithTeacher(new Teacher("Смешной дедус"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
-            .Build();
-
         var schedule = Schedule.Builder.AddClass(lesson).Build();
         var anotherSchedule = Schedule.Builder.AddClass(anotherLesson).Build();
 
@@ -142,29 +126,6 @@ public class IsuExtraTest
     [Fact]
     public void GetStreamsByCourse_ThrowIfEmpty()
     {
-        var address = _addressBuilder
-            .WithStreet("Пупкино-Зааааречино")
-            .WithHousing(228)
-            .WithClassroom(228322)
-            .Build();
-
-        var lesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Киберкринж")
-            .WithTeacher(new Teacher("Пеперонич"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(17, 20)))
-            .Build();
-
-        var anotherLesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Безполезнич")
-            .WithTeacher(new Teacher("Смешной дедус"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
-            .Build();
-
-        var schedule = Schedule.Builder.AddClass(lesson).Build();
-        var anotherSchedule = Schedule.Builder.AddClass(anotherLesson).Build();
-
         var ognpName = new OgnpName("Науки об истинном кринже");
         var anotherOgnpName = new OgnpName("Науки об маленьком кринже");
         var megaFacultyName = new MegaFacultyName("Мегафакультет кринжа");
@@ -186,29 +147,6 @@ public class IsuExtraTest
     [Fact]
     public void GetStudentsByStream()
     {
-        var address = _addressBuilder
-            .WithStreet("Пупкино-Зааааречино")
-            .WithHousing(228)
-            .WithClassroom(228322)
-            .Build();
-
-        var lesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Киберкринж")
-            .WithTeacher(new Teacher("Пеперонич"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(17, 20)))
-            .Build();
-
-        var anotherLesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Безполезнич")
-            .WithTeacher(new Teacher("Смешной дедус"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
-            .Build();
-
-        var schedule = Schedule.Builder.AddClass(lesson).Build();
-        var anotherSchedule = Schedule.Builder.AddClass(anotherLesson).Build();
-
         var ognpName = new OgnpName("Науки об истинном кринже");
         var anotherOgnpName = new OgnpName("Науки об маленьком кринже");
         var megaFacultyName = new MegaFacultyName("Мегафакультет кринжа");
@@ -240,28 +178,6 @@ public class IsuExtraTest
     [Fact]
     public void GetNonRegisteredToOgnpStudents()
     {
-        var address = _addressBuilder
-            .WithStreet("Пупкино-Зааааречино")
-            .WithHousing(228)
-            .WithClassroom(228322)
-            .Build();
-
-        var lesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Киберкринж")
-            .WithTeacher(new Teacher("Пеперонич"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(17, 20)))
-            .Build();
-
-        var anotherLesson = _universityClassBuilder
-            .WithAddress(address)
-            .WithName("Безполезнич")
-            .WithTeacher(new Teacher("Смешной дедус"))
-            .WithTime(new ClassTime(DayOfWeek.Saturday, new TimeOnly(16, 00)))
-            .Build();
-
-        var schedule = Schedule.Builder.AddClass(lesson).Build();
-
         var ognpName = new OgnpName("Науки об истинном кринже");
         var anotherOgnpName = new OgnpName("Науки об маленьком кринже");
         var megaFacultyName = new MegaFacultyName("Мегафакультет кринжа");

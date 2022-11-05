@@ -2,8 +2,6 @@ namespace Isu.Extra.Models;
 
 public class ClassTime : IEquatable<ClassTime>
 {
-    private static readonly TimeOnly LessonTime = new TimeOnly(1, 50);
-
     public ClassTime(DayOfWeek dayOfWeek, TimeOnly classBegin)
     {
         ArgumentNullException.ThrowIfNull(dayOfWeek);
