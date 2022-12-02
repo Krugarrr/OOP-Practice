@@ -1,15 +1,25 @@
-﻿namespace Banks.TransactionEntity;
+﻿using System.Transactions;
 
-public class TransferTypeAbstractTransacion : AbstractTransacion
+namespace Banks.TransactionEntity;
+
+public class TransferTypeAbstractTransaction : AbstractTransacion
 {
-    public TransferTypeAbstractTransacion(Bank transferBank, int transferAccountId)
-        : base()
+    public TransferTypeAbstractTransaction(
+        decimal money,
+        Bank transferBank,
+        int transferAccountId)
+        : base(money)
     {
         Type = TransactionType.Transfer;
         TransferBank = transferBank;
         TransferAccountId = transferAccountId;
     }
 
-    public new Bank TransferBank { get; }
-    public new int TransferAccountId { get; }
+    public Bank TransferBank { get; }
+    public int TransferAccountId { get; }
+
+    protected override void ChangeStatus()
+    {
+        Status = TransactionStatus.Aborted;
+    }
 }

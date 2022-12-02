@@ -9,8 +9,9 @@ public class TransferTypeTransactionHandler : TransactionAbstractHandler
         AbstractTransacion abstractTransacion = account.GetTransaction(id);
         if (abstractTransacion.Type == TransactionType.Transfer)
         {
+            var transferTransaction = abstractTransacion as TransferTypeAbstractTransaction;
             account.AddMoney(abstractTransacion.Sum); // как будто это тоже костыль
-            AbstractAccount anotherBankAccount = abstractTransacion.TransferBank.GetAccount(abstractTransacion.Id);
+            AbstractAccount anotherBankAccount = transferTransaction.TransferBank.GetAccount(abstractTransacion.Id);
             anotherBankAccount.TakeMoney(abstractTransacion.Sum);
             return " "; // костыль
         }

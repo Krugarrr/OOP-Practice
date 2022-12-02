@@ -2,13 +2,18 @@
 
 public class TransactionFactory : ITransactionFactory
 {
-    public AbstractTransacion CreateAddTakeTransaction()
+    public AbstractTransacion CreateAddTransaction(decimal money)
     {
-        return new AddnTakeTypeAbstractTransacion();
+        return new AddTypeTransaction(money);
     }
 
-    public AbstractTransacion CreateTransferTransaction(int id, Bank bank)
+    public AbstractTransacion CreateTakeTransaction(decimal money)
     {
-        return new TransferTypeAbstractTransacion(bank, id);
+        return new TakeTypeTransaction(money);
+    }
+
+    public AbstractTransacion CreateTransferTransaction(decimal money, int id, Bank bank)
+    {
+        return new TransferTypeAbstractTransaction(money, bank, id);
     }
 }

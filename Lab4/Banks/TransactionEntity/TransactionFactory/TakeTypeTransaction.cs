@@ -2,12 +2,12 @@
 
 namespace Banks.TransactionEntity;
 
-public class AddTypeTransaction : AbstractTransacion
+public class TakeTypeTransaction : AbstractTransacion
 {
-    public AddTypeTransaction(decimal money)
+    public TakeTypeTransaction(decimal money)
         : base(money)
     {
-        Type = TransactionType.Add;
+        Type = TransactionType.Take;
     }
 
     protected override void ChangeStatus()
