@@ -4,17 +4,11 @@ namespace Banks.TransactionEntity;
 
 public abstract class AbstractTransacion
 {
-    public AbstractTransacion(
-        int id,
-        decimal sum,
-        TransactionType type)
+    public AbstractTransacion()
     {
         Time = DateTime.Now;
-        Id = id;
-        Sum = sum;
 
         // вынести в счёт
-        Type = type;
         Status = TransactionStatus.Committed;
     }
 
@@ -23,7 +17,7 @@ public abstract class AbstractTransacion
     public decimal Sum { get; }
     public Bank TransferBank { get; }
     public int TransferAccountId { get; }
-    public TransactionType Type { get; }
+    public TransactionType Type { get; private protected set; }
     public TransactionStatus Status { get; private set; }
 
     private void ChangeStatus()

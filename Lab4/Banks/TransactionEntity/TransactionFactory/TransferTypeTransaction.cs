@@ -2,9 +2,10 @@
 
 public class TransferTypeAbstractTransacion : AbstractTransacion
 {
-    public TransferTypeAbstractTransacion(int id, decimal sum, TransactionType type, Bank transferBank, int transferAccountId)
-        : base(id, sum, type)
+    public TransferTypeAbstractTransacion(Bank transferBank, int transferAccountId)
+        : base()
     {
+        Type = TransactionType.Transfer;
         TransferBank = transferBank;
         TransferAccountId = transferAccountId;
     }
