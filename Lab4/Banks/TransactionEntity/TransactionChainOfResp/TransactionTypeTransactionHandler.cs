@@ -6,12 +6,12 @@ public class TransferTypeTransactionHandler : TransactionAbstractHandler
 {
     public override object Handle(Account account, int id)
     {
-        Transaction transaction = account.GetTransaction(id);
-        if (transaction.Type == TransactionType.Transfer)
+        AbstractTransacion abstractTransacion = account.GetTransaction(id);
+        if (abstractTransacion.Type == TransactionType.Transfer)
         {
-            account.AddMoney(transaction.Sum); // как будто это тоже костыль
-            AbstractAccount anotherBankAccount = transaction.TransferBank.GetAccount(transaction.Id);
-            anotherBankAccount.TakeMoney(transaction.Sum);
+            account.AddMoney(abstractTransacion.Sum); // как будто это тоже костыль
+            AbstractAccount anotherBankAccount = abstractTransacion.TransferBank.GetAccount(abstractTransacion.Id);
+            anotherBankAccount.TakeMoney(abstractTransacion.Sum);
             return " "; // костыль
         }
 

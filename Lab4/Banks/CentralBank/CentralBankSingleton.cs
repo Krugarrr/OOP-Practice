@@ -13,7 +13,7 @@ public sealed class CentralBankSingleton : ICentralBank
 
     public TimeManager TimeManager { get; }
 
-    public static CentralBankSingleton GetInstace(TimeManager timeManager)
+    public static CentralBankSingleton GetInstance(TimeManager timeManager)
     {
         if (_instance is null)
         {

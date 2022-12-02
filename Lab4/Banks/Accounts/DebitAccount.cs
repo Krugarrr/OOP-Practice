@@ -1,6 +1,5 @@
 using System.Transactions;
 using Banks.TransactionEntity.TransactionChainOfResp;
-using Transaction = Banks.TransactionEntity.Transaction;
 
 namespace Banks.Accounts;
 

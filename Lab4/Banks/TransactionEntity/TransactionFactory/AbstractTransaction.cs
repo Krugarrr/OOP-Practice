@@ -1,10 +1,10 @@
-﻿/*using System.Transactions;
+﻿using System.Transactions;
 
 namespace Banks.TransactionEntity;
 
-public class Transaction
+public abstract class AbstractTransacion
 {
-    public Transaction(
+    public AbstractTransacion(
         int id,
         decimal sum,
         TransactionType type)
@@ -30,4 +30,4 @@ public class Transaction
     {
         Status = TransactionStatus.Aborted;
     }
-}*/
+}

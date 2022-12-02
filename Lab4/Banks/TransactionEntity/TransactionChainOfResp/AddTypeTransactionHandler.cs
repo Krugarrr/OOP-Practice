@@ -6,10 +6,10 @@ public class AddTypeTransactionHandler : TransactionAbstractHandler
 {
     public override object Handle(Account account, int id)
     {
-        Transaction transaction = account.GetTransaction(id);
-        if (transaction.Type == TransactionType.Add)
+        AbstractTransacion abstractTransacion = account.GetTransaction(id);
+        if (abstractTransacion.Type == TransactionType.Add)
         {
-            account.TakeMoney(transaction.Sum); // как будто это тоже костыль
+            account.TakeMoney(abstractTransacion.Sum); // как будто это тоже костыль
             return " "; // костыль
         }
 
