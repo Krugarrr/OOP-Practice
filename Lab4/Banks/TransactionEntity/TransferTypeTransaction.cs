@@ -1,15 +1,17 @@
 ﻿using System.Transactions;
 using Banks.Accounts;
+using Banks.BankEntity;
 
 namespace Banks.TransactionEntity;
 
 public class TransferTypeAbstractTransaction : AbstractTransaction
 {
     public TransferTypeAbstractTransaction(
+        int id,
         decimal money,
         Bank transferBank,
         int transferAccountId)
-        : base(money)
+        : base(id, money)
     {
         Type = TransactionType.Transfer;
         TransferBank = transferBank;

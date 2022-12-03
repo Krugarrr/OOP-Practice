@@ -5,8 +5,9 @@ namespace Banks.TransactionEntity;
 
 public abstract class AbstractTransaction
 {
-    public AbstractTransaction(decimal money)
+    public AbstractTransaction(int id, decimal money)
     {
+        Id = id;
         Time = DateTime.Now;
         Sum = money;
 

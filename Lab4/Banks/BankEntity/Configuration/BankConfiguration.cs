@@ -2,20 +2,22 @@ using System.Reflection.PortableExecutable;
 
 namespace Banks;
 
-public class BankConfiguration
+public class BankConfiguration : IEquatable<BankConfiguration>
 {
     public BankConfiguration(
         decimal debitInterestRate,
         decimal transactionLimit,
         decimal creditLimit,
         decimal creditComission,
-        DepositInterestRate depositInterestRate)
+        DepositInterestRate depositInterestRate,
+        int depositAccountTime)
     {
         DebitInterestRate = debitInterestRate;
         TransactionLimit = transactionLimit;
         CreditLimit = creditLimit;
         CreditComission = creditComission;
         DepositInterestRate = depositInterestRate;
+        DepositAccountTime = depositAccountTime;
     }
 
     public decimal DebitInterestRate { get; }
@@ -25,6 +27,32 @@ public class BankConfiguration
     public decimal CreditLimit { get; }
     public decimal CreditComission { get; }
     public DepositInterestRate DepositInterestRate { get; }
+    public int DepositAccountTime { get; }
+
+    public bool Equals(BankConfiguration other)
+    {
+        return other is not null
+               && DebitInterestRate == other.DebitInterestRate
+               && TransactionLimit == other.TransactionLimit
+               && CreditLimit == other.CreditLimit
+               && CreditComission == other.CreditComission
+               && Equals(DepositInterestRate, other.DepositInterestRate);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is BankConfiguration configuration)
+        {
+            return Equals(configuration);
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(DebitInterestRate, TransactionLimit, CreditLimit, CreditComission, DepositInterestRate);
+    }
 }
 
 public class BankConfigurationBuilder
@@ -34,6 +62,7 @@ public class BankConfigurationBuilder
     private decimal creditLimit;
     private decimal creditComission;
     private DepositInterestRate depositInterestRate;
+    private int depositAccountTime;
 
     public BankConfigurationBuilder()
     {
@@ -42,6 +71,7 @@ public class BankConfigurationBuilder
         creditLimit = 0;
         creditComission = 0;
         depositInterestRate = null;
+        depositAccountTime = 0;
     }
 
     public BankConfigurationBuilder WithDebitInterestRate(decimal rate)
@@ -74,6 +104,12 @@ public class BankConfigurationBuilder
         return this;
     }
 
+    public BankConfigurationBuilder WithDepositAccountTime(int time)
+    {
+        depositAccountTime = time;
+        return this;
+    }
+
     public BankConfiguration Build()
     {
         return new BankConfiguration(
@@ -81,6 +117,7 @@ public class BankConfigurationBuilder
             transactionLimit,
             creditLimit,
             creditComission,
-            depositInterestRate);
+            depositInterestRate,
+            depositAccountTime);
     }
 }

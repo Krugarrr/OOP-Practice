@@ -1,12 +1,14 @@
+using System.Reactive.Subjects;
+using Banks.BankEntity;
+
 namespace Banks;
 
 public class TimeManager
 {
     private DateTime currentTime;
-
     public TimeManager()
     {
-        this.currentTime = DateTime.Now;
+       currentTime = default(DateTime);
     }
 
     public void AddDay()
@@ -14,19 +16,9 @@ public class TimeManager
         currentTime.AddDays(1);
     }
 
-    public void AddDays(int days)
-    {
-        currentTime.AddDays(days);
-    }
-
     public void AddMonth()
     {
         currentTime.AddMonths(1);
-    }
-
-    public void AddMonths(int months)
-    {
-        currentTime.AddMonths(months);
     }
 
     public void AddYear()
@@ -34,8 +26,10 @@ public class TimeManager
         currentTime.AddYears(1);
     }
 
-    public void AddYears(int years)
+    public int UpdateTime()
     {
-        currentTime.AddYears(years);
+        int days = currentTime.Day;
+        currentTime = default(DateTime);
+        return days;
     }
 }

@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Banks;
 
-public class DepositInterestRate
+public class DepositInterestRate : IEquatable<DepositInterestRate>
 {
     public DepositInterestRate(IReadOnlyList<DepositInterestPoint> points, decimal maxInterestRate)
     {
@@ -13,6 +13,34 @@ public class DepositInterestRate
     public static DepositInterestRateBuilder Builder => new DepositInterestRateBuilder();
     public IReadOnlyList<DepositInterestPoint> DepositInterestPoints { get; }
     public decimal MaxInterestRate { get; }
+
+    public decimal FindSuitRate(decimal balance)
+    {
+        DepositInterestPoint point = DepositInterestPoints.First(p => (balance >= p.MinSum && balance <= p.MaxSum));
+        if (point is null)
+            return MaxInterestRate;
+        return point.InterestRate;
+    }
+
+    public bool Equals(DepositInterestRate other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Equals(DepositInterestPoints, other.DepositInterestPoints) && MaxInterestRate == other.MaxInterestRate;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((DepositInterestRate)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(DepositInterestPoints, MaxInterestRate);
+    }
 
     public class DepositInterestRateBuilder
     {
@@ -30,9 +58,9 @@ public class DepositInterestRate
             return this;
         }
 
-        public DepositInterestRateBuilder AddMaxRate(DepositInterestPoint point)
+        public DepositInterestRateBuilder AddMaxRate(decimal rate)
         {
-            _points.Add(point);
+            maxRate = rate;
             return this;
         }
 

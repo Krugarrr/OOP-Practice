@@ -5,8 +5,8 @@ namespace Banks.TransactionEntity;
 
 public class AddTypeTransaction : AbstractTransaction
 {
-    public AddTypeTransaction(decimal money)
-        : base(money)
+    public AddTypeTransaction(int id, decimal money)
+        : base(id, money)
     {
         Type = TransactionType.Add;
     }

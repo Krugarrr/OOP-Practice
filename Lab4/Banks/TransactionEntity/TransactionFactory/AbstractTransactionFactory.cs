@@ -1,19 +1,21 @@
-﻿namespace Banks.TransactionEntity;
+﻿using Banks.BankEntity;
+
+namespace Banks.TransactionEntity.TransactionFactory;
 
 public class TransactionFactory : ITransactionFactory
 {
-    public AbstractTransaction CreateAddTransaction(decimal money)
+    public AbstractTransaction CreateAddTransaction(int id, decimal money)
     {
-        return new AddTypeTransaction(money);
+        return new AddTypeTransaction(id, money);
     }
 
-    public AbstractTransaction CreateTakeTransaction(decimal money)
+    public AbstractTransaction CreateTakeTransaction(int id, decimal money)
     {
-        return new TakeTypeTransaction(money);
+        return new TakeTypeTransaction(id, money);
     }
 
-    public AbstractTransaction CreateTransferTransaction(decimal money, int id, Bank bank)
+    public AbstractTransaction CreateTransferTransaction(int id, decimal money, int anotherId, Bank bank)
     {
-        return new TransferTypeAbstractTransaction(money, bank, id);
+        return new TransferTypeAbstractTransaction(id, money, bank, anotherId);
     }
 }

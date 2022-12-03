@@ -5,8 +5,8 @@ namespace Banks.TransactionEntity;
 
 public class TakeTypeTransaction : AbstractTransaction
 {
-    public TakeTypeTransaction(decimal money)
-        : base(money)
+    public TakeTypeTransaction(int id, decimal money)
+        : base(id, money)
     {
         Type = TransactionType.Take;
     }

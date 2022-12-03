@@ -1,60 +1,104 @@
-﻿using Banks.TransactionEntity;
-using Banks.TransactionEntity.TransactionChainOfResp;
+﻿using System.Buffers;
+using System.Runtime.Serialization;
+using Banks.BankEntity;
+using Banks.ClientEntity;
+using Banks.TransactionEntity;
+using Banks.TransactionEntity.TransactionFactory;
 
 namespace Banks.Accounts;
 
-public class Account : AbstractAccount
+public class Account : IEquatable<Account>
 {
-    private static TransferTypeTransactionHandler _tranferHandler;
-    private static AddTypeTransactionHandler _addHandler;
-    private static TakeTypeTransactionHandler _takeHandler;
+    private const decimal StartSum = 0;
     private readonly List<AbstractTransaction> _transactionHistory;
+    private int idGenerator;
 
     public Account(
         int id,
-        decimal balance,
         BankConfiguration configuration,
-        string owner)
+        Client owner)
     {
-        Id = id;
-        Balance = balance;
         Configuration = configuration;
         Owner = owner;
-        _transactionHistory = new List<AbstractTransaction>();
+        Id = id;
+        Balance = StartSum;
 
+        idGenerator = 0;
+        _transactionHistory = new List<AbstractTransaction>();
         TransactionFactory = new TransactionFactory();
-        _addHandler = new AddTypeTransactionHandler();
-        _takeHandler = new TakeTypeTransactionHandler();
-        _tranferHandler = new TransferTypeTransactionHandler();
-        _addHandler.SetNext(_takeHandler).SetNext(_tranferHandler);
+        if (Owner.Address is null || Owner.Document == 0)
+            Sussy = Suspection.Sus;
     }
 
     public int Id { get; }
     public decimal Balance { get; private set; }
     public BankConfiguration Configuration { get; }
+    public Suspection Sussy { get; private set; }
     public ITransactionFactory TransactionFactory { get; }
     public IReadOnlyList<AbstractTransaction> TransactionHistory => _transactionHistory;
 
-    public string Owner { get; } // пофиксить потом ибо стринга - хуета
-    public override void AddMoney(decimal money)
+    public Client Owner { get; }
+    public void AddMoney(decimal money)
     {
         Balance += money;
-
-        // придумать логику добавления транзакций _transactionHistory.Add(new Transaction());
+        AbstractTransaction transaction = TransactionFactory.CreateAddTransaction(idGenerator++, money);
+        _transactionHistory.Add(transaction);
     }
 
-    public override void TakeMoney(decimal money)
+    public void TakeMoney(decimal money)
     {
+        TransactionLimitValidation(money);
         Balance -= money;
+        AbstractTransaction transaction = TransactionFactory.CreateTakeTransaction(idGenerator++, money);
+        _transactionHistory.Add(transaction);
     }
 
-    public override void TransferMoney(decimal money, int id, Bank bank)
+    public void TransferMoney(decimal money, int id, Bank bank)
     {
+        TransactionLimitValidation(money);
         bank.GetAccount(id).AddMoney(money);
+        AbstractTransaction transaction = TransactionFactory.CreateTransferTransaction(idGenerator++, money, id, bank);
+        _transactionHistory.Add(transaction);
+    }
+
+    public void ApproveClient()
+    {
+        Sussy = Suspection.NotSus;
     }
 
     public AbstractTransaction GetTransaction(int id)
     {
         return _transactionHistory.FirstOrDefault(t => t.Id.Equals(id));
+    }
+
+    public bool Equals(Account other)
+        => other is not null
+           && Id.Equals(other.Id)
+           && TransactionFactory.Equals(other.TransactionFactory)
+           && Owner.Equals(other.Owner)
+           && Configuration.Equals(other.Configuration)
+           && Balance.Equals(other.Balance)
+           && TransactionHistory.Equals(other.TransactionHistory);
+
+    public override bool Equals(object obj)
+    {
+        if (obj is Account account)
+        {
+            return Equals(account);
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+        => HashCode.Combine(Balance, Configuration, TransactionFactory, Id, Owner, TransactionHistory);
+
+    private void TransactionLimitValidation(decimal money)
+    {
+        if (Sussy == Suspection.Sus)
+        {
+            if (money > Configuration.TransactionLimit)
+                throw new Exception();
+        }
     }
 }
