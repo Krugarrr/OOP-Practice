@@ -5,9 +5,12 @@ using Banks.CentralBank;
 using Banks.ClientEntity;
 using Banks.ClientEntity.Interfaces;
 using Xunit;
+using Xunit.Abstractions;
+
 namespace Banks.Test;
 public class BanksTest
 {
+        private readonly ITestOutputHelper _testOutputHelper;
         private IAddressBuilder _addressBuilder = new AddressBuilder();
         private TimeManager timeManager = new TimeManager();
         private CentralBankSingleton centralBank;
@@ -19,8 +22,9 @@ public class BanksTest
         private BankConfiguration _newConfiguration;
         private Client _suss;
 
-        public BanksTest()
+        public BanksTest(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             centralBank = CentralBankSingleton.GetInstance(timeManager);
 
             address = _addressBuilder
@@ -97,9 +101,10 @@ public class BanksTest
             bank.CreateDebitAccount(_client);
             var account = bank.GetAccount(0);
             account.AddMoney(50000);
-            centralBank.TimeManager.AddMonth();
             centralBank.TimeManager.AddDay();
+            centralBank.TimeManager.AddMonth();
             centralBank.Fundraising();
+            _testOutputHelper.WriteLine(account.GetBalance().ToString());
             Assert.True(account.GetBalance() > 50000);
         }
 }

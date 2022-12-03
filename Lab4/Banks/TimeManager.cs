@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reactive.Subjects;
 using Banks.BankEntity;
 
@@ -5,10 +6,12 @@ namespace Banks;
 
 public class TimeManager
 {
+    private const int DaysInYear = 365;
     private DateTime currentTime;
+
     public TimeManager()
     {
-       currentTime = default(DateTime);
+        currentTime = default;
     }
 
     public void AddDay()
@@ -28,8 +31,11 @@ public class TimeManager
 
     public int UpdateTime()
     {
-        int days = currentTime.Day;
-        currentTime = default(DateTime);
+        int days = currentTime.Day +
+                   (currentTime.Month * DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
+                   + (currentTime.Year * DaysInYear);
+
+        currentTime = default;
         return days;
     }
 }

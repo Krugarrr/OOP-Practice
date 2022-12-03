@@ -47,4 +47,5 @@ var account = new DebitAccount(new Account(0, configuration, client));
 bank.ChangeConfiguration(newConfiguration);
 bank.Accounts.Last().AddMoney(300);
 centralBank.TimeManager.AddDay();
+centralBank.TimeManager.AddMonth();
 centralBank.TimeManager.UpdateTime();
