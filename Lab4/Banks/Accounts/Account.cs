@@ -8,7 +8,7 @@ public class Account : AbstractAccount
     private static TransferTypeTransactionHandler _tranferHandler;
     private static AddTypeTransactionHandler _addHandler;
     private static TakeTypeTransactionHandler _takeHandler;
-    private readonly List<AbstractTransacion> _transactionHistory;
+    private readonly List<AbstractTransaction> _transactionHistory;
 
     public Account(
         int id,
@@ -20,8 +20,9 @@ public class Account : AbstractAccount
         Balance = balance;
         Configuration = configuration;
         Owner = owner;
+        _transactionHistory = new List<AbstractTransaction>();
 
-        _transactionHistory = new List<AbstractTransacion>();
+        TransactionFactory = new TransactionFactory();
         _addHandler = new AddTypeTransactionHandler();
         _takeHandler = new TakeTypeTransactionHandler();
         _tranferHandler = new TransferTypeTransactionHandler();
@@ -31,6 +32,9 @@ public class Account : AbstractAccount
     public int Id { get; }
     public decimal Balance { get; private set; }
     public BankConfiguration Configuration { get; }
+    public ITransactionFactory TransactionFactory { get; }
+    public IReadOnlyList<AbstractTransaction> TransactionHistory => _transactionHistory;
+
     public string Owner { get; } // пофиксить потом ибо стринга - хуета
     public override void AddMoney(decimal money)
     {
@@ -49,12 +53,7 @@ public class Account : AbstractAccount
         bank.GetAccount(id).AddMoney(money);
     }
 
-    public override void Cancel()
-    {
-        _addHandler.Handle(this, Id);
-    }
-
-    public AbstractTransacion GetTransaction(int id)
+    public AbstractTransaction GetTransaction(int id)
     {
         return _transactionHistory.FirstOrDefault(t => t.Id.Equals(id));
     }

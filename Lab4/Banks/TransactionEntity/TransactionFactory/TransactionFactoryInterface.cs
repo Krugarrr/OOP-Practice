@@ -2,7 +2,7 @@
 
 public interface ITransactionFactory
 {
-    public AbstractTransacion CreateAddTransaction(decimal money);
-    public AbstractTransacion CreateTakeTransaction(decimal money);
-    public AbstractTransacion CreateTransferTransaction(decimal money, int id, Bank bank);
+    public AbstractTransaction CreateAddTransaction(decimal money);
+    public AbstractTransaction CreateTakeTransaction(decimal money);
+    public AbstractTransaction CreateTransferTransaction(decimal money, int id, Bank bank);
 }

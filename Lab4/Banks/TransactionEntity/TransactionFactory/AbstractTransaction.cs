@@ -1,10 +1,11 @@
 ﻿using System.Transactions;
+using Banks.Accounts;
 
 namespace Banks.TransactionEntity;
 
-public abstract class AbstractTransacion
+public abstract class AbstractTransaction
 {
-    public AbstractTransacion(decimal money)
+    public AbstractTransaction(decimal money)
     {
         Time = DateTime.Now;
         Sum = money;
@@ -18,5 +19,16 @@ public abstract class AbstractTransacion
     public decimal Sum { get; }
     public TransactionType Type { get; private protected set; }
     public TransactionStatus Status { get; private protected set; }
+
+    public void CancelTransactionTemplateMethod(AccountDecorator account)
+    {
+        CancelAddMoney(account);
+        CancelTakeMoney(account);
+        CancelTransferMoney(account);
+    }
+
+    protected virtual void CancelAddMoney(AccountDecorator account) { }
+    protected virtual void CancelTakeMoney(AccountDecorator account) { }
+    protected virtual void CancelTransferMoney(AccountDecorator account) { }
     protected abstract void ChangeStatus();
 }

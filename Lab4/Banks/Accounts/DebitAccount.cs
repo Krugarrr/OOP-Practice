@@ -1,4 +1,6 @@
+using System.Runtime.InteropServices.ComTypes;
 using System.Transactions;
+using Banks.TransactionEntity;
 using Banks.TransactionEntity.TransactionChainOfResp;
 
 namespace Banks.Accounts;
@@ -13,7 +15,8 @@ public class DebitAccount : AccountDecorator
     public override void AddMoney(decimal money)
     {
         // TransactionLimitValidation(money);
-        base.AddMoney(money);
+        AbstractTransaction transaction = AccountWrap.TransactionFactory.CreateAddTransaction(money);
+        transaction.CancelTransactionTemplateMethod(this);
     }
 
     public override void TakeMoney(decimal money)
@@ -21,13 +24,15 @@ public class DebitAccount : AccountDecorator
         // TransactionLimitValidation(money);
         if (AccountWrap.Balance < money)
             throw new Exception();
-        AccountWrap.AddMoney(money);
+        AbstractTransaction transaction = AccountWrap.TransactionFactory.CreateTakeTransaction(money);
+        transaction.CancelTransactionTemplateMethod(this);
     }
 
     public override void TransferMoney(decimal money, int id, Bank bank)
     {
         TransactionLimitValidation(money);
-        bank.GetAccount(id).AddMoney(money);
+        AbstractTransaction transaction = AccountWrap.TransactionFactory.CreateTransferTransaction(money, id, bank);
+        transaction.CancelTransactionTemplateMethod(this);
     }
 
     private void TransactionLimitValidation(decimal money)

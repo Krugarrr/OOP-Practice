@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization.Metadata;
+using Banks.TransactionEntity;
 
 namespace Banks.Accounts;
 
@@ -6,14 +7,14 @@ public abstract class AccountDecorator : AbstractAccount
 {
     protected AccountDecorator(Account account)
     {
-        this.AccountWrap = account;
+        AccountWrap = account;
     }
 
     protected Account AccountWrap { get; set; }
 
     public void SetAccount(Account account)
     {
-        this.AccountWrap = account;
+        AccountWrap = account;
     }
 
     public int GetId() => AccountWrap.Id;
@@ -33,8 +34,13 @@ public abstract class AccountDecorator : AbstractAccount
         AccountWrap.TransferMoney(money, id, bank);
     }
 
-    public override void Cancel()
+    public AbstractTransaction GetTransaction(int id)
     {
-        AccountWrap.Cancel();
+        return AccountWrap.TransactionHistory.FirstOrDefault(t => t.Id.Equals(id));
+    }
+
+    public void Cancel(int id)
+    {
+        GetTransaction(id).CancelTransactionTemplateMethod(this);
     }
 }
