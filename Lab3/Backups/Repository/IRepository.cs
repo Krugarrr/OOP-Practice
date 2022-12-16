@@ -1,10 +1,12 @@
+using System.Globalization;
 using Backups.Entities;
-using Backups.RepositoryObjects.Interface;
+using Backups.RepositoryObjects.Interfaces;
 
 namespace Backups.Repository;
 
 public interface IRepository
 {
-    public IRepositoryObject CreateRepositoryObject(BackupObject backupObject);
-    public Stream OpenFile(string path);
+    string RepositoryPath { get; }
+    IRepositoryObject CreateRepositoryObject(BackupObject backupObject);
+    Stream OpenFile(string path);
 }

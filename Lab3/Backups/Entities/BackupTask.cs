@@ -1,6 +1,5 @@
 using Backups.Algorithm;
 using Backups.Repository;
-using Backups.RepositoryObjects.Interface;
 
 namespace Backups.Entities;
 
@@ -8,23 +7,46 @@ public class BackupTask
 {
     private readonly List<BackupObject> _backupObjects;
 
-    public BackupTask(IRepository repository, IArchiver archiver)
+    public BackupTask(
+        IRepository repository,
+        IArchiver archiver,
+        List<BackupObject> backupObjects,
+        IAlgorithmStrategy algorithm,
+        Backup backup)
     {
-        _backupObjects = new List<BackupObject>();
+        ArgumentNullException.ThrowIfNull(backupObjects);
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(archiver);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(backup);
+
+        _backupObjects = backupObjects;
+        Algorithm = algorithm;
+        Backup = backup;
         Repository = repository;
         Archiver = archiver;
     }
 
+    public Backup Backup { get; }
     public IRepository Repository { get; }
     public IAlgorithmStrategy Algorithm { get; }
     public IArchiver Archiver { get; }
     public IReadOnlyList<BackupObject> BackupObjects => _backupObjects;
 
-    public RestorePoint CreateRestorePoint(string archivePath, string archiveName)
+    public void AddBackupObject(BackupObject backupObject)
     {
-        IReadOnlyList<IRepositoryObject> repositoryObjects = _backupObjects.Select(o => o.GetRepositoryObject()).ToList();
-        IStorage storage = Algorithm.CreateZipArchive(repositoryObjects, Repository, Archiver, archivePath, archiveName);
-        var date = DateTime.Now;
-        return new RestorePoint(BackupObjects, date, storage);
+        ArgumentNullException.ThrowIfNull(backupObject);
+        _backupObjects.Add(backupObject);
+    }
+
+    public RestorePoint CreateRestorePoint(string archivePath)
+    {
+        if (string.IsNullOrWhiteSpace(archivePath))
+            throw new Exception();
+
+        IStorage storage = Algorithm.RunZipAlgorithm(_backupObjects, Repository, Archiver, archivePath);
+        var restorePoint = new RestorePoint(_backupObjects, DateTime.Now, storage);
+        Backup.AddRestorePoint(restorePoint);
+        return restorePoint;
     }
 }

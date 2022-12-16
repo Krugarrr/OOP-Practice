@@ -1,29 +1,29 @@
 using System.Reflection;
-using Backups.RepositoryObjects.Interface;
+using Backups.RepositoryObjects.Interfaces;
 using Backups.Visitor;
-using Backups.Visitor.Interface;
-using IRepositoryObjectVisitor = Backups.Visitor.Interface.IRepositoryObjectVisitor;
+using Backups.Visitor.Interfaces;
 
 namespace Backups.RepositoryObjects;
 
 public class UserDirectory : IDirectory
 {
-    private Func<List<IRepositoryObject>> userStream;
+    private readonly Func<List<IRepositoryObject>> _userStream;
 
     public UserDirectory(string name, Func<List<IRepositoryObject>> stream)
     {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new Exception();
+        ArgumentNullException.ThrowIfNull(stream);
+
         Name = name;
-        userStream = stream;
+        _userStream = stream;
     }
 
     public string Name { get; }
 
-    public List<IRepositoryObject> Aboba()
-    {
-        return userStream.Invoke();
-    }
+    public List<IRepositoryObject> InvokeStream() => _userStream.Invoke();
 
-    public void Accept(IRepositoryObjectVisitor visitor)
+    public void Accept(IZipArchiveVisitor visitor)
     {
         visitor.VisitDirectory(this);
     }

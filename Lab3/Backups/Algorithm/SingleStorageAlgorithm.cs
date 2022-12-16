@@ -1,18 +1,24 @@
 using Backups.Entities;
 using Backups.Repository;
-using Backups.RepositoryObjects.Interface;
+using Backups.RepositoryObjects.Interfaces;
 
 namespace Backups.Algorithm;
 
 public class SingleStorageAlgorithm : IAlgorithmStrategy
 {
-    public IStorage CreateZipArchive(
-            IReadOnlyList<IRepositoryObject> objects,
+    public IStorage RunZipAlgorithm(
+            IReadOnlyList<BackupObject> objects,
             IRepository repository,
             IArchiver archiver,
-            string archivePath,
-            string archiveName)
+            string archivePath)
         {
-            return archiver.CreateZipStorage(archivePath, archiveName, objects, repository);
+            ArgumentNullException.ThrowIfNull(objects);
+            ArgumentNullException.ThrowIfNull(repository);
+            ArgumentNullException.ThrowIfNull(archiver);
+            if (string.IsNullOrWhiteSpace(archivePath))
+                throw new Exception();
+
+            IReadOnlyList<IRepositoryObject> repositoryObjects = objects.Select(o => o.GetRepositoryObject()).ToList();
+            return archiver.CreateZipStorage(archivePath, repositoryObjects, repository);
         }
 }

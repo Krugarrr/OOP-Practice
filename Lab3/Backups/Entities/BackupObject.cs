@@ -1,21 +1,24 @@
 using Backups.Repository;
-using Backups.RepositoryObjects.Interface;
+using Backups.RepositoryObjects.Interfaces;
 
 namespace Backups.Entities;
 
 public class BackupObject
 {
-    public BackupObject(IRepository repository, string objectPath)
+    public BackupObject(FileSystemRepository repository, string objectPath)
     {
-        ObjectPath = objectPath;
+        ArgumentNullException.ThrowIfNull(repository);
+        if (string.IsNullOrWhiteSpace(objectPath))
+            throw new Exception();
+
+        // string fullPath = $"{repository.RepositoryPath}{objectPath}";
+        string fullPath = $"{objectPath}";
+        ObjectPath = fullPath;
         Repository = repository;
     }
 
     public IRepository Repository { get; }
     public string ObjectPath { get; }
 
-    public IRepositoryObject GetRepositoryObject()
-    {
-        return Repository.CreateRepositoryObject(this);
-    }
+    public IRepositoryObject GetRepositoryObject() => Repository.CreateRepositoryObject(this);
 }
