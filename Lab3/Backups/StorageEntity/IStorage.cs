@@ -1,7 +1,8 @@
-using Backups.Repository;
+using Backups.RepositoryObjects.Interfaces;
 
-namespace Backups.Entities;
+namespace Backups.StorageEntity;
 
 public interface IStorage
 {
+    public IReadOnlyList<IRepositoryObject> GetObjects();
 }

@@ -1,4 +1,5 @@
 ﻿using Backups.Entities;
+using Backups.RepositoryObjects.Interfaces;
 
 namespace Backups.StorageEntity;
 
@@ -11,4 +12,6 @@ public class SplitStorage : IStorage
         ArgumentNullException.ThrowIfNull(storages);
         _storages = storages;
     }
+
+    public IReadOnlyList<IRepositoryObject> GetObjects() => _storages.SelectMany(s => s.GetObjects()).ToList();
 }

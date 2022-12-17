@@ -26,7 +26,7 @@ public class ZipArchiver : IArchiver
         foreach (IRepositoryObject obj in repoObjects)
             obj.Accept(visitor);
 
-        var storage = new Storage(repository, $"{archivePath}");
+        var storage = new Storage(repository, visitor.GetZipObjects(), $"{archivePath}");
         return storage;
     }
 }

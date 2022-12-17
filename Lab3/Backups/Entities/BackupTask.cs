@@ -4,6 +4,7 @@ using Backups.Exceptions;
 using Backups.Interfaces;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
+using Backups.StorageEntity;
 
 namespace Backups.Entities;
 
