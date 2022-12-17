@@ -1,3 +1,4 @@
+using Backups.Exceptions;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
 
@@ -9,9 +10,8 @@ public class BackupObject
     {
         ArgumentNullException.ThrowIfNull(repository);
         if (string.IsNullOrWhiteSpace(objectPath))
-            throw new Exception();
+            throw PathException.PathIsNullOrEmptyException();
 
-        // string fullPath = $"{repository.RepositoryPath}{objectPath}";
         string fullPath = $"{objectPath}";
         ObjectPath = fullPath;
         Repository = repository;

@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using Backups.Entities;
+using Backups.Exceptions;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
 using Backups.StorageEntity;
@@ -14,13 +15,18 @@ public class ZipArchiver : IArchiver
         IReadOnlyList<IRepositoryObject> repoObjects,
         IRepository repository)
     {
-        Stream archiveStream = repository.OpenFile($"{archivePath}.zip");
+        if (string.IsNullOrWhiteSpace(archivePath))
+            throw PathException.PathIsNullOrEmptyException();
+        ArgumentNullException.ThrowIfNull(repoObjects);
+        ArgumentNullException.ThrowIfNull(repository);
+
+        Stream archiveStream = repository.OpenFileStream($"{archivePath}.zip");
         using var archive = new ZipArchive(archiveStream, ZipArchiveMode.Create);
         var visitor = new ZipArchiveVisitor(archive);
         foreach (IRepositoryObject obj in repoObjects)
             obj.Accept(visitor);
 
-        var storage = new Storage(repository, $"${{arhivePath}}{repository.RepositoryPath}");
+        var storage = new Storage(repository, $"{archivePath}");
         return storage;
     }
 }

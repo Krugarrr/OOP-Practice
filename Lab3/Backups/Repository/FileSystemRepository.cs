@@ -1,6 +1,5 @@
-using System.Globalization;
-using System.Runtime.InteropServices.ComTypes;
 using Backups.Entities;
+using Backups.Exceptions;
 using Backups.RepositoryObjects;
 using Backups.RepositoryObjects.Interfaces;
 using Directory = System.IO.Directory;
@@ -21,32 +20,32 @@ public class FileSystemRepository : IRepository
             throw new Exception();
 
         RepositoryPath = repositoryPath;
-        _userFilestream = path => OpenFile(path);
-        _userDirectoryStream = path => OpenDir(path);
+        _userFilestream = OpenFileStream;
+        _userDirectoryStream = OpenDirectoryStream;
     }
 
     public string RepositoryPath { get; }
     public IRepositoryObject CreateRepositoryObject(BackupObject backupObject)
     {
         ArgumentNullException.ThrowIfNull(backupObject);
-        string path = backupObject.ObjectPath;
+        string objectPath = backupObject.ObjectPath;
 
-        if (File.Exists($"{backupObject.ObjectPath}"))
-            return new UserFile(new FileInfo(path).Name, () => _userFilestream(path));
+        if (File.Exists(objectPath))
+            return new UserFile(new FileInfo(objectPath).Name, () => _userFilestream(objectPath));
 
-        if (Directory.Exists($"{backupObject.ObjectPath}"))
-            return new UserDirectory(new DirectoryInfo(path).Name, () => _userDirectoryStream(path));
+        if (Directory.Exists(objectPath))
+            return new UserDirectory(new DirectoryInfo(objectPath).Name, () => _userDirectoryStream(objectPath));
 
-        throw new Exception();
+        throw RepositoryException.RestorePointCreationException();
     }
 
-    public Stream OpenFile(string path)
+    public Stream OpenFileStream(string path)
     {
         ValidatePath(path);
         return File.Open(path, FileMode.OpenOrCreate);
     }
 
-    public List<IRepositoryObject> OpenDir(string path)
+    public List<IRepositoryObject> OpenDirectoryStream(string path)
     {
         ValidatePath(path);
         var directories = new List<IRepositoryObject>();
@@ -54,14 +53,14 @@ public class FileSystemRepository : IRepository
 
         foreach (string directory in Directory.GetDirectories(path))
         {
-            string fullpath = $"{directory}";
-            directories.Add(new UserDirectory(directory, () => _userDirectoryStream(fullpath)));
+            string fullPath = $"{directory}";
+            directories.Add(new UserDirectory(new DirectoryInfo(fullPath).Name, () => _userDirectoryStream(fullPath)));
         }
 
         foreach (string file in Directory.GetFiles(path))
         {
-            string fullpath = $"{file}";
-            files.Add(new UserFile(file, () => _userFilestream(fullpath)));
+            string fullPath = $"{file}";
+            files.Add(new UserFile(new FileInfo(fullPath).Name, () => _userFilestream(fullPath)));
         }
 
         return files.Union(directories).ToList();
@@ -70,6 +69,6 @@ public class FileSystemRepository : IRepository
     protected void ValidatePath(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            throw new Exception();
+            throw PathException.PathIsNullOrEmptyException();
     }
 }

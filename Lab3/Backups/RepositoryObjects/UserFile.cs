@@ -1,3 +1,4 @@
+using Backups.Exceptions;
 using Backups.RepositoryObjects.Interfaces;
 using Backups.Visitor.Interfaces;
 
@@ -9,7 +10,7 @@ public class UserFile : IFile
     public UserFile(string name, Func<Stream> stream)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new Exception();
+            PathException.PathIsNullOrEmptyException();
         ArgumentNullException.ThrowIfNull(stream);
 
         Name = name;

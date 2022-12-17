@@ -8,5 +8,6 @@ public interface IRepository
 {
     string RepositoryPath { get; }
     IRepositoryObject CreateRepositoryObject(BackupObject backupObject);
-    Stream OpenFile(string path);
+    Stream OpenFileStream(string path);
+    List<IRepositoryObject> OpenDirectoryStream(string path);
 }

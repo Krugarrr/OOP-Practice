@@ -1,4 +1,6 @@
 using Backups.Algorithm;
+using Backups.Archiver;
+using Backups.Exceptions;
 using Backups.Repository;
 
 namespace Backups.Entities;
@@ -39,14 +41,13 @@ public class BackupTask
         _backupObjects.Add(backupObject);
     }
 
-    public RestorePoint CreateRestorePoint(string archivePath)
+    public void CreateRestorePoint(string archivePath)
     {
         if (string.IsNullOrWhiteSpace(archivePath))
-            throw new Exception();
+            throw PathException.PathIsNullOrEmptyException();
 
         IStorage storage = Algorithm.RunZipAlgorithm(_backupObjects, Repository, Archiver, archivePath);
         var restorePoint = new RestorePoint(_backupObjects, DateTime.Now, storage);
         Backup.AddRestorePoint(restorePoint);
-        return restorePoint;
     }
 }

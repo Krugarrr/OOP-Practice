@@ -32,7 +32,7 @@ public class ZipArchiveVisitor : IZipArchiveVisitor
         ArgumentNullException.ThrowIfNull(userDirectory);
 
         ZipArchive archiveStackPeek = _archivesStack.Peek();
-        ZipArchiveEntry archiveEntry = archiveStackPeek.CreateEntry(userDirectory.Name + ".zip");
+        ZipArchiveEntry archiveEntry = archiveStackPeek.CreateEntry($"{userDirectory.Name}.zip");
 
         using Stream archiveEntryStream = archiveEntry.Open();
         using var archive = new ZipArchive(archiveEntryStream, ZipArchiveMode.Create);

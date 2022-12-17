@@ -1,6 +1,5 @@
-using System.Reflection;
+using Backups.Exceptions;
 using Backups.RepositoryObjects.Interfaces;
-using Backups.Visitor;
 using Backups.Visitor.Interfaces;
 
 namespace Backups.RepositoryObjects;
@@ -12,7 +11,7 @@ public class UserDirectory : IDirectory
     public UserDirectory(string name, Func<List<IRepositoryObject>> stream)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new Exception();
+            throw PathException.PathIsNullOrEmptyException();
         ArgumentNullException.ThrowIfNull(stream);
 
         Name = name;

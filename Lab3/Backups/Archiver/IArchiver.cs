@@ -1,7 +1,8 @@
+using Backups.Entities;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
 
-namespace Backups.Entities;
+namespace Backups.Archiver;
 
 public interface IArchiver
 {

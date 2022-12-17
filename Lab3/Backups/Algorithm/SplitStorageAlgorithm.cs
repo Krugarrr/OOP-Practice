@@ -1,4 +1,6 @@
+using Backups.Archiver;
 using Backups.Entities;
+using Backups.Exceptions;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
 using Backups.StorageEntity;
@@ -17,7 +19,7 @@ public class SplitStorageAlgorithm : IAlgorithmStrategy
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(archiver);
         if (string.IsNullOrWhiteSpace(archivePath))
-            throw new Exception();
+            throw PathException.PathIsNullOrEmptyException();
 
         IReadOnlyList<IRepositoryObject> repositoryObjects = objects.Select(o => o.GetRepositoryObject()).ToList();
         var storages = repositoryObjects
