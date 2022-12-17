@@ -9,22 +9,21 @@ namespace Backups.Algorithm;
 
 public class SplitStorageAlgorithm : IAlgorithmStrategy
 {
-    public IStorage RunZipAlgorithm(
-        IReadOnlyList<BackupObject> objects,
+    public IStorage Execute(
+        IReadOnlyList<IRepositoryObject> repositoryObjects,
         IRepository repository,
         IArchiver archiver,
         string archivePath)
     {
-        ArgumentNullException.ThrowIfNull(objects);
+        ArgumentNullException.ThrowIfNull(repositoryObjects);
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(archiver);
         if (string.IsNullOrWhiteSpace(archivePath))
             throw PathException.PathIsNullOrEmptyException();
 
-        IReadOnlyList<IRepositoryObject> repositoryObjects = objects.Select(o => o.GetRepositoryObject()).ToList();
         var storages = repositoryObjects
                 .Select(s => archiver
-                .CreateZipStorage(archivePath, repositoryObjects, repository))
+                .Archive(archivePath, repositoryObjects, repository))
                 .ToList();
         return new SplitStorage(storages);
     }

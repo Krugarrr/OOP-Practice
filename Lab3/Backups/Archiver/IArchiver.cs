@@ -6,7 +6,7 @@ namespace Backups.Archiver;
 
 public interface IArchiver
 {
-    public IStorage CreateZipStorage(
+    public IStorage Archive(
         string archivePath,
         IReadOnlyList<IRepositoryObject> repoObjects,
         IRepository repository);

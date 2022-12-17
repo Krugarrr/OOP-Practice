@@ -20,7 +20,7 @@ public class UserDirectory : IDirectory
 
     public string Name { get; }
 
-    public List<IRepositoryObject> InvokeStream() => _userStream.Invoke();
+    public IReadOnlyCollection<IRepositoryObject> GetContents() => _userStream.Invoke();
 
     public void Accept(IZipArchiveVisitor visitor)
     {

@@ -10,7 +10,7 @@ namespace Backups.Archiver;
 
 public class ZipArchiver : IArchiver
 {
-    public IStorage CreateZipStorage(
+    public IStorage Archive(
         string archivePath,
         IReadOnlyList<IRepositoryObject> repoObjects,
         IRepository repository)

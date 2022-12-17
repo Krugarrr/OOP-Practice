@@ -18,7 +18,7 @@ public class UserFile : IFile
     }
 
     public string Name { get; }
-    public Stream InvokeStream() => _userStream.Invoke();
+    public Stream GetContents() => _userStream.Invoke();
 
     public void Accept(IZipArchiveVisitor visitor)
     {

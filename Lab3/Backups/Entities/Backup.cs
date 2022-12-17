@@ -1,6 +1,8 @@
-﻿namespace Backups.Entities;
+﻿using Backups.Interfaces;
 
-public class Backup
+namespace Backups.Entities;
+
+public class Backup : IBackup
 {
     private readonly List<RestorePoint> _backupHistory;
     public Backup()

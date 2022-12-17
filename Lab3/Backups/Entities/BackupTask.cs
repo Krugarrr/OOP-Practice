@@ -1,11 +1,13 @@
 using Backups.Algorithm;
 using Backups.Archiver;
 using Backups.Exceptions;
+using Backups.Interfaces;
 using Backups.Repository;
+using Backups.RepositoryObjects.Interfaces;
 
 namespace Backups.Entities;
 
-public class BackupTask
+public class BackupTask : IBackupTask
 {
     private readonly List<BackupObject> _backupObjects;
 
@@ -46,7 +48,8 @@ public class BackupTask
         if (string.IsNullOrWhiteSpace(archivePath))
             throw PathException.PathIsNullOrEmptyException();
 
-        IStorage storage = Algorithm.RunZipAlgorithm(_backupObjects, Repository, Archiver, archivePath);
+        IReadOnlyList<IRepositoryObject> repositoryObjects = _backupObjects.Select(o => o.GetRepositoryObject()).ToList();
+        IStorage storage = Algorithm.Execute(repositoryObjects, Repository, Archiver, archivePath);
         var restorePoint = new RestorePoint(_backupObjects, DateTime.Now, storage);
         Backup.AddRestorePoint(restorePoint);
     }

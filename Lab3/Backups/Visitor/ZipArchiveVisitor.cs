@@ -23,7 +23,7 @@ public class ZipArchiveVisitor : IZipArchiveVisitor
         ZipArchiveEntry archiveEntry = archiveStackPeek.CreateEntry(userFile.Name);
 
         using Stream archiveEntryStream = archiveEntry.Open();
-        using Stream userFileStream = userFile.InvokeStream();
+        using Stream userFileStream = userFile.GetContents();
         userFileStream.CopyTo(archiveEntryStream);
     }
 
@@ -37,7 +37,7 @@ public class ZipArchiveVisitor : IZipArchiveVisitor
         using Stream archiveEntryStream = archiveEntry.Open();
         using var archive = new ZipArchive(archiveEntryStream, ZipArchiveMode.Create);
         _archivesStack.Push(archive);
-        foreach (IRepositoryObject directory in userDirectory.InvokeStream())
+        foreach (IRepositoryObject directory in userDirectory.GetContents())
         {
             directory.Accept(this);
         }

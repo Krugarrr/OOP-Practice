@@ -8,19 +8,18 @@ namespace Backups.Algorithm;
 
 public class SingleStorageAlgorithm : IAlgorithmStrategy
 {
-    public IStorage RunZipAlgorithm(
-            IReadOnlyList<BackupObject> objects,
+    public IStorage Execute(
+            IReadOnlyList<IRepositoryObject> repositoryObjects,
             IRepository repository,
             IArchiver archiver,
             string archivePath)
         {
-            ArgumentNullException.ThrowIfNull(objects);
+            ArgumentNullException.ThrowIfNull(repositoryObjects);
             ArgumentNullException.ThrowIfNull(repository);
             ArgumentNullException.ThrowIfNull(archiver);
             if (string.IsNullOrWhiteSpace(archivePath))
                 throw PathException.PathIsNullOrEmptyException();
 
-            IReadOnlyList<IRepositoryObject> repositoryObjects = objects.Select(o => o.GetRepositoryObject()).ToList();
-            return archiver.CreateZipStorage(archivePath, repositoryObjects, repository);
+            return archiver.Archive(archivePath, repositoryObjects, repository);
         }
 }
