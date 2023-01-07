@@ -17,4 +17,10 @@ public class Backup : IBackup
         ArgumentNullException.ThrowIfNull(restorePoint);
         _backupHistory.Add(restorePoint);
     }
+
+    public void RemoveRestorePoint(RestorePoint restorePoint)
+    {
+        ArgumentNullException.ThrowIfNull(restorePoint);
+        _backupHistory.Remove(restorePoint);
+    }
 }

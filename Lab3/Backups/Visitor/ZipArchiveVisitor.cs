@@ -28,9 +28,11 @@ public class ZipArchiveVisitor : IZipArchiveVisitor
         ZipArchiveEntry archiveEntry = archiveStackPeek.CreateEntry(userFile.Name);
 
         using Stream archiveEntryStream = archiveEntry.Open();
-        using Stream userFileStream = userFile.GetContents();
-        userFileStream.CopyTo(archiveEntryStream);
-        _objects.Peek().Add(new ZipFile(userFile.Name));
+        using (Stream userFileStream = userFile.GetContents())
+        {
+            userFileStream.CopyTo(archiveEntryStream);
+            _objects.Peek().Add(new ZipFile(userFile.Name, archiveEntry));
+        }
     }
 
     public void VisitDirectory(IDirectory userDirectory)

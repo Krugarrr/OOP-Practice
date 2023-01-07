@@ -1,4 +1,5 @@
 using Backups.StorageEntity;
+using Newtonsoft.Json;
 
 namespace Backups.Entities;
 
@@ -15,8 +16,13 @@ public class RestorePoint
         Storage = storage;
     }
 
+    [JsonProperty("backupObjects")]
     public IReadOnlyList<BackupObject> BackupObjects { get; }
 
+    [JsonProperty("date")]
+
     public DateTime Date { get; }
+
+    [JsonProperty("storage")]
     public IStorage Storage { get; }
 }

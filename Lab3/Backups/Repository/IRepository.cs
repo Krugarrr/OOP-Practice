@@ -10,4 +10,6 @@ public interface IRepository
     IRepositoryObject CreateRepositoryObject(BackupObject backupObject);
     Stream OpenFileStream(string path);
     List<IRepositoryObject> OpenDirectoryStream(string path);
+    Stream OpenZipStream(string path);
+    void OpenZipDirectory(string path);
 }

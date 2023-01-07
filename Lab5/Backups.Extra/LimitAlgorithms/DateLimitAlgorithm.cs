@@ -4,13 +4,13 @@ namespace Backups.Extra.LimitAlgorithms;
 
 public class DateLimitAlgorithm : ILimitAlgorithm
 {
-    public DateLimitAlgorithm(DateTime interval)
+    public DateLimitAlgorithm(TimeSpan interval)
     {
         Interval = interval;
     }
 
-    public DateTime Interval { get; }
+    public TimeSpan Interval { get; }
 
     public IReadOnlyList<RestorePoint> Run(IReadOnlyList<RestorePoint> restorePoints)
-        => restorePoints.Where(rp => rp.Date < Interval).ToList();
+        => restorePoints.Where(rp => DateTime.Now - rp.Date >= Interval).ToList();
 }

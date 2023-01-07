@@ -1,11 +1,14 @@
 using Backups.Exceptions;
 using Backups.RepositoryObjects.Interfaces;
 using Backups.Visitor.Interfaces;
+using Newtonsoft.Json;
 
 namespace Backups.RepositoryObjects;
 
 public class UserDirectory : IDirectory
 {
+    [JsonProperty("stream")]
+
     private readonly Func<List<IRepositoryObject>> _userStream;
 
     public UserDirectory(string name, Func<List<IRepositoryObject>> stream)
@@ -17,6 +20,8 @@ public class UserDirectory : IDirectory
         Name = name;
         _userStream = stream;
     }
+
+    [JsonProperty("name")]
 
     public string Name { get; }
 
