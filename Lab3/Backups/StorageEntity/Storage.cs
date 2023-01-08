@@ -3,11 +3,13 @@ using Backups.ArchiveEntities;
 using Backups.Entities;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
+using Newtonsoft.Json;
 
 namespace Backups.StorageEntity;
 
 public class Storage : IStorage
 {
+    [JsonProperty("zipObjects")]
     private readonly List<IZipObject> _zipObjects;
     public Storage(IRepository repository, IReadOnlyList<IZipObject> zipObjects, string path)
     {
@@ -21,8 +23,11 @@ public class Storage : IStorage
         Path = path;
     }
 
+    [JsonProperty("repository")]
     public FileSystemRepository Repository { get; }
     public IReadOnlyCollection<IZipObject> ZipObjects => _zipObjects;
+
+    [JsonProperty("path")]
     public string Path { get; }
 
     public IReadOnlyList<IRepositoryObject> GetObjects()
@@ -34,5 +39,10 @@ public class Storage : IStorage
         }
 
         return repositoryObjects;
+    }
+
+    public void Suicide()
+    {
+        File.Delete(Path);
     }
 }

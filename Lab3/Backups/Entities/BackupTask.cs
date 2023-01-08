@@ -5,11 +5,13 @@ using Backups.Interfaces;
 using Backups.Repository;
 using Backups.RepositoryObjects.Interfaces;
 using Backups.StorageEntity;
+using Newtonsoft.Json;
 
 namespace Backups.Entities;
 
 public class BackupTask : IBackupTask
 {
+    [JsonProperty("backupObjects")]
     private readonly List<BackupObject> _backupObjects;
 
     public BackupTask(
@@ -32,9 +34,16 @@ public class BackupTask : IBackupTask
         Archiver = archiver;
     }
 
+    [JsonProperty("backup")]
     public Backup Backup { get; }
+
+    [JsonProperty("repository")]
     public IRepository Repository { get; }
+
+    [JsonProperty("algorithm")]
     public IAlgorithmStrategy Algorithm { get; }
+
+    [JsonProperty("archiver")]
     public IArchiver Archiver { get; }
     public IReadOnlyList<BackupObject> BackupObjects => _backupObjects;
 
@@ -42,6 +51,12 @@ public class BackupTask : IBackupTask
     {
         ArgumentNullException.ThrowIfNull(backupObject);
         _backupObjects.Add(backupObject);
+    }
+
+    public void RemoveBackupObject(BackupObject backupObject)
+    {
+        ArgumentNullException.ThrowIfNull(backupObject);
+        _backupObjects.Remove(backupObject);
     }
 
     public void CreateRestorePoint(string archivePath)

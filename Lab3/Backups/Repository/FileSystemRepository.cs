@@ -2,6 +2,7 @@ using Backups.Entities;
 using Backups.Exceptions;
 using Backups.RepositoryObjects;
 using Backups.RepositoryObjects.Interfaces;
+using Newtonsoft.Json;
 using Directory = System.IO.Directory;
 using File = System.IO.File;
 
@@ -24,11 +25,12 @@ public class FileSystemRepository : IRepository
         _userDirectoryStream = OpenDirectoryStream;
     }
 
+    [JsonProperty("repositoryPath")]
     public string RepositoryPath { get; }
     public IRepositoryObject CreateRepositoryObject(BackupObject backupObject)
     {
         ArgumentNullException.ThrowIfNull(backupObject);
-        string objectPath = backupObject.ObjectPath;
+        string objectPath = $"{RepositoryPath}{backupObject.ObjectPath}";
 
         if (File.Exists(objectPath))
             return new UserFile(new FileInfo(objectPath).Name, () => _userFilestream(objectPath));
@@ -64,6 +66,20 @@ public class FileSystemRepository : IRepository
         }
 
         return files.Union(directories).ToList();
+    }
+
+    public Stream OpenZipStream(string path)
+    {
+        path = $"{RepositoryPath}{path}";
+        ValidatePath(path);
+        return File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+    }
+
+    public void OpenZipDirectory(string path)
+    {
+        path = $"{RepositoryPath}{path}";
+        ValidatePath(path);
+        Directory.CreateDirectory(path);
     }
 
     protected void ValidatePath(string path)

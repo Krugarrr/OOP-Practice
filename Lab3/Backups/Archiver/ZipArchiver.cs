@@ -20,7 +20,7 @@ public class ZipArchiver : IArchiver
         ArgumentNullException.ThrowIfNull(repoObjects);
         ArgumentNullException.ThrowIfNull(repository);
 
-        Stream archiveStream = repository.OpenFileStream($"{archivePath}.zip");
+        Stream archiveStream = repository.OpenFileStream($"{repository.RepositoryPath}{archivePath}.zip");
         using var archive = new ZipArchive(archiveStream, ZipArchiveMode.Create);
         var visitor = new ZipArchiveVisitor(archive);
         foreach (IRepositoryObject obj in repoObjects)

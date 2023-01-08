@@ -1,21 +1,25 @@
 ﻿using Backups.RepositoryObjects;
 using Backups.RepositoryObjects.Interfaces;
+using Newtonsoft.Json;
 
 namespace Backups.ArchiveEntities;
 
 public class ZipDirectory : IZipObject
 {
-    private readonly List<IZipObject> _objects;
+    [JsonProperty("zipObjects")]
+    private readonly List<IZipObject> _zipObjects;
     public ZipDirectory(string name, List<IZipObject> zipObjects)
     {
         Name = name;
-        _objects = zipObjects;
+        _zipObjects = zipObjects;
     }
 
+    [JsonProperty("name")]
     public string Name { get; }
 
     public IRepositoryObject Convert()
     {
-        return new UserDirectory(this.Name, () => null);
+        var repositoryObjects = _zipObjects.Select(z => z.Convert()).ToList();
+        return new UserDirectory(this.Name, () => repositoryObjects);
     }
 }
