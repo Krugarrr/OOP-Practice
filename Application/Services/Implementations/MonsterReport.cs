@@ -1,13 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Application.Dto;
 using Application.Extensions;
+using Application.Mapping;
 using DataAccess;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Implementations;
 
-public class MonsterReport
+public class MonsterReport : IMonsterReport
 {
     private readonly DatabaseContext _context;
 
@@ -20,14 +21,11 @@ public class MonsterReport
     {
         Session bossSession = await _context.Sessions.GetEntityAsync(sessionId, cancellationToken);
         Worker boss = await _context.Workers.GetEntityAsync(bossSession.Login, cancellationToken);
-        int messagesAmount = 0;
-        foreach (Messenger m in _context.Messengers)
-        {
-            messagesAmount += m.MessagesAmount;
-        }
-        var report = new Report(messagesAmount, )
+        int messagesAmount = Enumerable.Sum(_context.Messengers, m => m.MessagesAmount);
+
+        var report = new Report(messagesAmount, DateTime.Now);
         _context.Reports.Add(report);
         await _context.SaveChangesAsync(cancellationToken);
-        return .AsDto();
+        return report.AsDto();
     }
 }

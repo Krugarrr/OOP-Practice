@@ -1,3 +1,3 @@
 ﻿namespace Application.Dto;
 
-public record ReportDto(int messagesAmount, TimeSpan messagesIntervalAmount);
+public record ReportDto(int messagesAmount, DateTime time);

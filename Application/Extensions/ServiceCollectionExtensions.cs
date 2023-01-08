@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
     {
         collection.AddScoped<IMonsterCorporation, MonsterCorporation>();
         collection.AddScoped<IMonsterMail, MonsterMail>();
+        collection.AddScoped<IMonsterReport, MonsterReport>();
         
         return collection;
     }

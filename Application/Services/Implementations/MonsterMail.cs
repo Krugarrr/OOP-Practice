@@ -53,8 +53,8 @@ public class MonsterMail : IMonsterMail
     public async Task<MessageDto> GetPhoneMessageAsync(string text, int id, Guid phoneId, CancellationToken cancellationToken)
     {
         var message = new Message(DateTime.Now, text, MessageStatus.New, id);
-        var messenger = await _context.Messengers.GetEntityAsync(phoneId, cancellationToken) as PhoneMessenger;
-        messenger?.Messages.Add(message);
+        Messenger messenger = await _context.Messengers.GetEntityAsync(phoneId, cancellationToken);
+        messenger.Messages.Add(message);
         _context.Messages.Add(message);
         await _context.SaveChangesAsync(cancellationToken);
         return message.AsDto();
@@ -63,8 +63,8 @@ public class MonsterMail : IMonsterMail
     public async Task<MessageDto> GetBirdMessageAsync(string text, int id, Guid birdId, CancellationToken cancellationToken)
     {
         var message = new Message(DateTime.Now, text, MessageStatus.New, id);
-        var messenger = await _context.Messengers.GetEntityAsync(birdId, cancellationToken) as BirdMessenger;
-        messenger?.Messages.Add(message);
+        Messenger messenger = await _context.Messengers.GetEntityAsync(birdId, cancellationToken);
+        messenger.Messages.Add(message);
         _context.Messages.Add(message);
         await _context.SaveChangesAsync(cancellationToken);
         return message.AsDto();

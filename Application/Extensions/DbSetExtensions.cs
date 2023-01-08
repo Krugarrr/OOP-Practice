@@ -1,4 +1,5 @@
 ﻿
+using Application.Exceptions.NotFound;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Extensions;
@@ -11,7 +12,7 @@ public static class DbSetExtensions
         var entity = await set.FindAsync(new object[] { id }, cancellationToken);
 
         if (entity is null)
-            throw new Exception();
+            throw EntityNotFoundException<T>.Create(id);
 
         return entity;
     }
@@ -22,7 +23,7 @@ public static class DbSetExtensions
         var entity = await set.FindAsync(new object[] { name }, cancellationToken);
 
         if (entity is null)
-            throw new Exception();
+            throw EntityNotFoundException<T>.Create(name);
 
         return entity;
     }
@@ -33,18 +34,7 @@ public static class DbSetExtensions
         var entity = await set.FindAsync(new object[] { id }, cancellationToken);
 
         if (entity is null)
-            throw new Exception();
-
-        return entity;
-    }
-    
-    public static async Task<T> GetEntityAsync<T>(this DbSet<T> set, decimal id, CancellationToken cancellationToken)
-        where T : class
-    {
-        var entity = await set.FindAsync(new object[] { id }, cancellationToken);
-
-        if (entity is null)
-            throw new Exception();
+            throw EntityNotFoundException<T>.Create(id);
 
         return entity;
     }
